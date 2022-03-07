@@ -5,6 +5,9 @@ const contacts = [
 
 ];
 
+const productUrl = "https://fakestoreapi.com/products";
+
+
 export class ShopDB {
     constructor() {
         if (ShopDB.exist) {
@@ -12,24 +15,26 @@ export class ShopDB {
         }
         ShopDB.instance = this;
         ShopDB.exist = true;
-        console.log(1);
+        this.products = new Data(productUrl);
+       
     }
     openDB(fn, context) {
         let openRequest = indexedDB.open("shop", 1);
 
-        openRequest.onupgradeneeded = () => {
+        openRequest.onupgradeneeded = async () => {
             let db = openRequest.result;
+            let products = await this.products.loadData()
             this.creatTables("users", contacts, db)
-            console.log(db);
+            this.creatTables("products", products, db)
         };
 
         openRequest.onerror = () => {
             console.error("Error", openRequest.error);
         };
 
-        openRequest.onsuccess = () => {
+        openRequest.onsuccess = async () => {
             let db = openRequest.result;
-            if(fn) fn.call(context, db);
+            if (fn) fn.call(context, db);
         };
     }
 
@@ -51,34 +56,22 @@ export class ShopDB {
 }
 
 
-export class Notify {
+class Data {
 
-    showNotification(element, className, text) {
-        const message = document.createElement("p");
-        message.classList.add(className);
-        message.textContent = text;
-        element.insertAdjacentElement("afterend", message);
-        setTimeout(() => {
-            message.style.right = "1px";
-        }, 250);
-        setTimeout(() => {
-            message.style.right = "-175px";
-
-            setTimeout(() => {
-                message.remove();
-            }, 500);
-
-        }, 2000);
-
-    }
-    showMessage(element, className, text) {
-        const message = document.createElement("p");
-        message.classList.add(className);
-        message.textContent = text;
-        element.insertAdjacentElement("afterend", message);
-        setTimeout(() => {
-            message.remove();
-        }, 2000);
+    constructor(url) {
+        this.url = url
     }
 
-} 
+    loadData = async () => {
+        let data;
+        try {
+            const respons = await fetch(this.url);
+            data = await respons.json();
+        } catch (e) {
+            data = [];
+            console.log("error", e);
+        }
+        return data;
+    }
+
+}

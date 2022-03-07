@@ -1,4 +1,5 @@
-import { ShopDB, Notify } from "./model.js"
+import { ShopDB } from "./model.js";
+import { Notify } from "./notify.js";
 
 
 
