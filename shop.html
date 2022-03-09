@@ -40,7 +40,7 @@
 
     <!-- Header Area Start -->
     <header>
-        <div class="header-main sticky-nav ">
+        <div class="header-main bg-white sticky-nav ">
             <div class="container position-relative">
                 <div class="row">
                     <div class="col-auto align-self-center">
@@ -71,9 +71,8 @@
                                 <button class="dropdown-toggle header-action-btn" data-bs-toggle="dropdown"><i
                                         class="pe-7s-users"></i></button>
                                 <ul class="dropdown-menu dropdown-menu-right">
-                                    <li><a class="dropdown-item" href="#">My account</a></li>
-                                    <li><a class="dropdown-item" href="./login.html">Sign in</a></li>
-                                    <li><a class="dropdown-item" href="./log-out.html">Log out</a></li>
+                                    <li><a class="dropdown-item" href="my-account.html">My account</a></li>
+                                    <li><a class="dropdown-item" href="login.html">Sign in</a></li>
                                 </ul>
                             </div>
                             <!-- Single Wedge Start -->
@@ -198,159 +197,222 @@
 
 
 
-
-
-
-    <!-- Product Area Start -->
-    <div class="product-area">
+    <!-- breadcrumb-area start -->
+    <div class="breadcrumb-area">
         <div class="container">
+            <div class="row align-items-center justify-content-center">
+                <div class="col-12 text-center">
+                    <h2 class="breadcrumb-title">Shop</h2>
+                    <!-- breadcrumb-list start -->
+                    <ul class="breadcrumb-list">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Shop</li>
+                    </ul>
+                    <!-- breadcrumb-list end -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb-area end -->
 
 
+
+    <!-- Shop Page Start  -->
+    <div class="shop-category-area pt-100px pb-100px">
+        <div class="container">
             <div class="row">
-                <div class="col">
-                    <div class="tab-content mt-60px">
-                        <!-- 1st tab start -->
+                <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
+                    <!-- Shop Top Area Start -->
+                    <div class="desktop-tab">
+                        <div class="shop-top-bar d-flex">
+                            <!-- Left Side End -->
+                            <div class="shop-tab nav">
+                                <a class="active" href="#shop-grid" data-bs-toggle="tab">
+                                    <i class="fa fa-th" aria-hidden="true"></i>
+                                </a>
 
-                        <div class="row main_card" id="">
-                           
+                            </div>
+                            <!-- Right Side Start -->
+                            <div class="select-shoing-wrap d-flex align-items-center">
+                                <div class="shot-product">
+                                    <p>Sort By:</p>
+                                </div>
+                                <div class="shop-select">
+                                    <select class="shop-sort">
+                                        <option data-display="Default">Default</option>
+                                        <option value="1"> Name, A to Z</option>
+                                        <option value="2"> Name, Z to A</option>
+                                        <option value="3"> Price, low to high</option>
+                                        <option value="4"> Price, high to low</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <!-- Right Side End -->
+                            <!-- Right Side Start -->
+                            <div class="select-shoing-wrap d-flex align-items-center">
+                                <div class="shot-product">
+                                    <p>Show:</p>
+                                </div>
+                                <div class="shop-select show">
+                                    <select class="shop-sort">
+                                        <option data-display="12">12</option>
+                                        <option value="1"> 12</option>
+                                        <option value="2"> 10</option>
+                                        <option value="3"> 25</option>
+                                        <option value="4"> 20</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <!-- Right Side End -->
+                            <!-- Left Side start -->
+                            <p class="compare-product">Product Compare <span>(0) </span></p>
+                        </div>
+                    </div>
+                    <!-- Shop Top Area End -->
+
+                    <!-- Mobile shop bar -->
+                    <div class="shop-top-bar mobile-tab">
+                        <!-- Left Side End -->
+                        <div class="shop-tab nav d-flex justify-content-between">
+                            <div class="shop-tab nav">
+                                <a class="active" href="#shop-grid" data-bs-toggle="tab">
+                                    <i class="fa fa-th" aria-hidden="true"></i>
+                                </a>
+
+                            </div>
+                            <!-- Right Side Start -->
+                            <div class="select-shoing-wrap d-flex align-items-center">
+                                <div class="shot-product">
+                                    <p>Sort By:</p>
+                                </div>
+                                <div class="shop-select">
+                                    <select class="shop-sort">
+                                        <option data-display="Default">Default</option>
+                                        <option value="1"> Name, A to Z</option>
+                                        <option value="2"> Name, Z to A</option>
+                                        <option value="3"> Price, low to high</option>
+                                        <option value="4"> Price, high to low</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Right Side End -->
+                        <!-- Right Side Start -->
+                        <div class="select-shoing-wrap d-flex align-items-center justify-content-between">
+                            <div class="select-shoing-wrap d-flex align-items-center">
+                                <div class="shot-product">
+                                    <p>Show:</p>
+                                </div>
+                                <div class="shop-select show">
+                                    <select class="shop-sort">
+                                        <option data-display="12">12</option>
+                                        <option value="1"> 12</option>
+                                        <option value="2"> 10</option>
+                                        <option value="3"> 25</option>
+                                        <option value="4"> 20</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <!-- Right Side End -->
+                            <!-- Left Side start -->
+                            <p class="compare-product">Product Compare <span>(0) </span></p>
+                        </div>
+                    </div>
+                    <!-- Mobile shop bar -->
+
+                    <!-- Shop Bottom Area Start -->
+                    <div class="shop-bottom-area">
+
+                        <!-- Tab Content Area Start -->
+                        <div class="row">
+                            <div class="col">
+                                <div class="tab-content">
+                                    <div class="row mb-n-30px main_card" id="">
+                                      
+                                       
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tab Content Area End -->
+
+                        <!--  Pagination Area Start -->
+                        <div class="pro-pagination-style text-center text-lg-end" data-aos="fade-up"
+                            data-aos-delay="200">
+                            <div class="pages">
+                                <ul>
+                                    <li class="li"><a class="page-link" href="#"><i class="fa fa-angle-left"></i></a>
+                                    </li>
+                                    <li class="li"><a class="page-link" href="#">1</a></li>
+                                    <li class="li"><a class="page-link active" href="#">2</a></li>
+                                    <li class="li"><a class="page-link" href="#">3</a></li>
+                                    <li class="li"><a class="page-link" href="#"><i class="fa fa-angle-right"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!--  Pagination Area End -->
+                    </div>
+                    <!-- Shop Bottom Area End -->
+                </div>
+                <!-- Sidebar Area Start -->
+                <div class="col-lg-3 order-lg-first col-md-12 order-md-last">
+                    <div class="shop-sidebar-wrap">
+                        <!-- Sidebar single item -->
+                        <div class="sidebar-widget">
+                            <h4 class="sidebar-title">Categories</h4>
+                            <div class="sidebar-widget-category">
+                                <!-- <ul>
+                                    <li><a href="#" class="selected m-0"><i class="fa fa-angle-right"></i> All
+                                            <span>(65)</span> </a></li>
+                                    <li><a href="#" class=""><i class="fa fa-angle-right"></i> Computer
+                                            <span>(12)</span> </a></li>
+                                    <li><a href="#" class=""><i class="fa fa-angle-right"></i> Covid-19
+                                            <span>(22)</span> </a></li>
+                                    <li><a href="#" class=""><i class="fa fa-angle-right"></i> Electronics
+                                            <span>(19)</span> </a></li>
+                                    
+                                </ul> -->
+                            </div>
                         </div>
 
+
+                        <!-- Sidebar single item -->
+                        <div class="sidebar-widget mt-8">
+                            <h4 class="sidebar-title">Price Filter</h4>
+                            <div class="price-filter">
+                                <div class="price-slider-amount">
+                                    <input type="text" id="amount" class="p-0 h-auto lh-1" name="price"
+                                        placeholder="Add Your Price" />
+                                </div>
+                                <div id="slider-range"></div>
+                            </div>
+                        </div>
+                       
+                        <div class="sidebar-widget tag m-0">
+                            <h4 class="sidebar-title">Tags</h4>
+                            <div class="sidebar-widget-tag">
+                                <ul>
+                                    <li><a href="#">Fashion</a></li>
+                                    <li><a href="#">Organic</a></li>
+                                    <li><a href="#">Old Fashion</a></li>
+                                    <li><a href="#">Men</a></li>
+                                    <li><a href="#">Fashion</a></li>
+                                    <li><a href="#">Dress</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Sidebar single item -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Product Area End -->
-
-    <!-- Feature Area Srart -->
-    <div class="feature-area pt-100px">
-        <div class="container">
-            <div class="feature-wrapper">
-                <div class="single-feture-col">
-                    <!-- single item -->
-                    <div class="single-feature">
-                        <div class="feature-icon">
-                            <img src="assets/images/icons/1.png" alt="">
-                        </div>
-                        <div class="feature-content">
-                            <h4 class="title">Free Shipping</h4>
-                            <span class="sub-title">Capped at $39 per order</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- single item -->
-                <div class="single-feture-col ">
-                    <div class="single-feature">
-                        <div class="feature-icon">
-                            <img src="assets/images/icons/2.png" alt="">
-                        </div>
-                        <div class="feature-content">
-                            <h4 class="title">Card Payments</h4>
-                            <span class="sub-title">12 Months Installments</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- single item -->
-                <div class="single-feture-col">
-                    <div class="single-feature">
-                        <div class="feature-icon">
-                            <img src="assets/images/icons/3.png" alt="">
-                        </div>
-                        <div class="feature-content">
-                            <h4 class="title">Easy Returns</h4>
-                            <span class="sub-title">Shop With Confidence</span>
-                        </div>
-                    </div>
-                    <!-- single item -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Feature Area End -->
-
-
-    <!--  Blog area Start -->
-    <div class="main-blog-area pb-100px pt-100px">
-        <div class="container">
-            <!-- section title start -->
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="section-title text-center mb-30px0px">
-                        <h2 class="title">Latest Blog</h2>
-                        <p class="sub-title">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                            incididunt ut labore et dolore magna aliqua.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <!-- section title start -->
-
-            <div class="row">
-                <div class="col-lg-4 col-md-6 mb-md-30px mb-lm-30px">
-                    <div class="single-blog">
-                        <div class="blog-image">
-                            <a href="blog-single-left-sidebar.html"><img src="assets/images/blog-image/1.jpg"
-                                    class="img-responsive w-100" alt=""></a>
-                        </div>
-                        <div class="blog-text">
-                            <div class="blog-athor-date">
-                                <span> By,<a class="blog-author cercle-shape" href="#"> June Cha</a></span>
-                                <span class="blog-date">25 May, 2121</span>
-                            </div>
-                            <h5 class="blog-heading"><a class="blog-heading-link"
-                                    href="blog-single-left-sidebar.html">How to Explain Handmade Product to Your
-                                    Boss</a></h5>
-
-                            <a href="blog-single-left-sidebar.html" class="btn btn-primary blog-btn"> Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single blog -->
-                <div class="col-lg-4 col-md-6 mb-md-30px mb-lm-30px">
-                    <div class="single-blog ">
-                        <div class="blog-image">
-                            <a href="blog-single-left-sidebar.html"><img src="assets/images/blog-image/2.jpg"
-                                    class="img-responsive w-100" alt=""></a>
-                        </div>
-                        <div class="blog-text">
-                            <div class="blog-athor-date">
-                                <span> By,<a class="blog-author cercle-shape" href="#"> June Cha</a></span>
-                                <span class="blog-date">25 May, 2121</span>
-                            </div>
-                            <h5 class="blog-heading"><a class="blog-heading-link" href="blog-single-left-sidebar.html">7
-                                    Best Blogs to Follow About Handmade Goods
-                                </a></h5>
-
-                            <a href="blog-single-left-sidebar.html" class="btn btn-primary blog-btn"> Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single blog -->
-                <div class="col-lg-4 col-md-6">
-                    <div class="single-blog">
-                        <div class="blog-image">
-                            <a href="blog-single-left-sidebar.html"><img src="assets/images/blog-image/3.jpg"
-                                    class="img-responsive w-100" alt=""></a>
-                        </div>
-                        <div class="blog-text">
-                            <div class="blog-athor-date">
-                                <span> By,<a class="blog-author cercle-shape" href="#"> June Cha</a></span>
-                                <span class="blog-date">25 May, 2121</span>
-                            </div>
-                            <h5 class="blog-heading"><a class="blog-heading-link"
-                                    href="blog-single-left-sidebar.html">Us Too. 6 Reasons We Just Can't Stop
-                                </a></h5>
-
-
-                            <a href="blog-single-left-sidebar.html" class="btn btn-primary blog-btn"> Read More</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- End single blog -->
-            </div>
-        </div>
-    </div>
-    <!--  Blog area End -->
+    <!-- Shop Page End  -->
 
     <div class="newsletter-area ">
         <div class="container line-shape-bottom">
@@ -462,7 +524,7 @@
                         </div>
                         <!-- End single blog -->
                         <!-- Start single blog -->
-                        <div class="col-md-6 col-lg-4 col-md-6 col-sm-6 pl-120px line-shape">
+                        <div class="col-md-6 col-lg-4 col-sm-6 pl-120px line-shape">
                             <div class="single-wedge ">
 
                                 <h4 class="footer-herading">Contact Us</h4>

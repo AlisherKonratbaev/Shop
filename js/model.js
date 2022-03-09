@@ -1,11 +1,10 @@
+
+
 const contacts = [
     { login: "admin", pas: "123", role: "admin" },
     { login: "alex", pas: "123", role: "user" },
     { login: "dima", pas: "123", role: "user" },
-
 ];
-
-const productUrl = "https://fakestoreapi.com/products";
 
 
 export class ShopDB {
@@ -15,24 +14,23 @@ export class ShopDB {
         }
         ShopDB.instance = this;
         ShopDB.exist = true;
-        this.products = new Data(productUrl);
-       
+
     }
     openDB(fn, context) {
         let openRequest = indexedDB.open("shop", 1);
 
-        openRequest.onupgradeneeded = async () => {
+        openRequest.onupgradeneeded = () => {
             let db = openRequest.result;
-            let products = await this.products.loadData()
-            this.creatTables("users", contacts, db)
-            this.creatTables("products", products, db)
+            this.creatTables("users", contacts, db);
+            this.creatTables("products", [], db);
+            this.creatTables("basket", [], db);
         };
 
         openRequest.onerror = () => {
             console.error("Error", openRequest.error);
         };
 
-        openRequest.onsuccess = async () => {
+        openRequest.onsuccess = () => {
             let db = openRequest.result;
             if (fn) fn.call(context, db);
         };
@@ -47,25 +45,17 @@ export class ShopDB {
         for (let i in arr) {
             objectStore.add(arr[i]);
         }
-
-        objectStore.createIndex('login', 'login', {
-            unique: true
-        });
     }
 
 }
 
 
-class Data {
+export class Data {
 
-    constructor(url) {
-        this.url = url
-    }
-
-    loadData = async () => {
+    loadData = async function (url) {
         let data;
         try {
-            const respons = await fetch(this.url);
+            const respons = await fetch(url);
             data = await respons.json();
         } catch (e) {
             data = [];
@@ -75,3 +65,5 @@ class Data {
     }
 
 }
+
+

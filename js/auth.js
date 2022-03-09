@@ -9,8 +9,9 @@ export class Auth {
         if (!this.verify()) {
             return
         }
-        this.initDom();
         this.connect();
+
+        this.initDom();
         this.login();
     }
 
@@ -35,7 +36,6 @@ export class Auth {
     login() {
         this.loginBtn.addEventListener("click", (e) => {
             e.preventDefault();
-
             this.local.openDB(this.getUsers, this);
         })
     }
@@ -58,19 +58,19 @@ export class Auth {
         let login = this.loginEl.value.trim();
         let pas = this.pasEl.value.trim();
         let auth = { login, pas }
-        
+
         let flag = false;
 
         users.forEach(item => {
             if (item.login === auth.login && item.pas === auth.pas) {
                 flag = true;
-                sessionStorage.setItem('authorizedUser', JSON.stringify({login}));
+                sessionStorage.setItem('authorizedUser', JSON.stringify({ login }));
 
-                setTimeout(() =>{window.location.href = "index.html";}, 100);
+                setTimeout(() => { window.location.href = "index.html"; }, 100);
             }
         });
 
-        if(!flag) {
+        if (!flag) {
             this.notify.showMessage(this.pasEl, "messege", "Неверный логин или пароль");
         }
     }
