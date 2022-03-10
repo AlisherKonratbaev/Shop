@@ -1,6 +1,9 @@
 import {
     ShopDB
 } from "./model.js";
+import {
+    Notify
+} from "./notify.js"
 
 
 export class Basket {
@@ -23,6 +26,7 @@ export class Basket {
     }
     connect() {
         this.local = new ShopDB();
+        this.notify = new Notify();
     }
 
     initBasket() {
@@ -37,6 +41,7 @@ export class Basket {
             let users = transaction.result;
             users.forEach(user => {
                 let basket = {
+                    id: user.id,
                     login: user.login,
                     cart: []
                 }
@@ -121,30 +126,72 @@ export class Basket {
 
         }
         transaction.onerror = () => {
-            throw Error("error");
+
         }
     }
 
 
-    action() {
+    action(db) {
         let productWrap = document.querySelector(".main_card");
-        console.log(productWrap);
         if (!productWrap) {
             return
         }
 
-        productWrap.addEventListener("click", (e) => {
-            if(!e.target.classList.contains("add-to-cart")) return;
-            let parrentEl = e.target.closest(".product");
-            let product = {
-                product_id: parrentEl.dataset.id,
-                title: parrentEl.dataset.title,
-                count: 1,
-                price: parrentEl.dataset.price,
-                total: parrentEl.dataset.price,
-            };
-            
-            console.log(product);
-        })
+        if (db) {
+            productWrap.addEventListener("click", (e) => {
+                if (!e.target.classList.contains("add-to-cart")) return;
+                let parrentEl = e.target.closest(".product");
+
+                let product = {
+                    product_id: parrentEl.dataset.id,
+                    title: parrentEl.dataset.title,
+                    count: 1,
+                    price: parrentEl.dataset.price,
+                    total: parrentEl.dataset.price,
+                };
+
+
+                let transaction = db.transaction('basket')
+                    .objectStore("basket")
+                    .getAll();
+
+                transaction.onsuccess = () => {
+                    let baskets = transaction.result;
+                    let i;
+
+                    let currentBasket = baskets.find((basket, index) => {
+                        if (basket.login == this.user.login) {
+                            i = index;
+                            return true;
+                        } else return false;
+                    });
+
+                    console.log(currentBasket);
+                    currentBasket.cart.push(product);
+
+                    let transaction2 = db.transaction('basket', 'readwrite')
+                        .objectStore("basket")
+                        .put(currentBasket);
+
+                    transaction2.onsuccess = () => {
+                        this.notify.showNotification(this.wrap, "notification", "product created in basket");
+                        this.showBasket();
+                    }
+                    transaction2.onerror = () => {
+                        throw Error("error");
+                    }
+
+                }
+                transaction.onerror = () => {
+                    throw Error("error");
+                }
+            });
+
+        } else {
+            this.local.openDB(this.action, this);
+        }
+
     }
+
+
 }
