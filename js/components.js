@@ -38,7 +38,7 @@ export class ProductCard {
         const html = products.map(product => {
             return `
                 <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
-                    <div class="product">
+                    <div class="product" data-id="${product.id}" data-title="${product.title}" data-price="${product.price}">
                         <div class="thumb">
                             <a href="single-product.html" class="image">
                                 <img src="${product.thumbnail}" alt="Product" />
@@ -61,7 +61,7 @@ export class ProductCard {
                                 </span>
                                 <span class="rating-num">( 5 Review )</span>
                             </span>
-                            <h5 class="title"><a href="#">${product.title}
+                            <h5 class="title" ><a href="#">${product.title}
                                 </a>
                             </h5>
                             <span class="price">

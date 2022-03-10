@@ -67,3 +67,17 @@ export class Data {
 }
 
 
+export class LocalDB {
+
+    constructor() {
+
+    }
+
+
+    getUser() {
+        
+    }
+
+    
+}
+
