@@ -9354,4 +9354,5 @@ Pages - My Account
 	background-color: #198754;
 	color: #fff;
 	transition: all 0.5s;
+  z-index: 99;
 }

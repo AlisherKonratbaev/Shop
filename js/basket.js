@@ -3,7 +3,7 @@ import {
 } from "./model.js";
 import {
     Notify
-} from "./notify.js"
+} from "./notify.js";
 
 
 export class Basket {
@@ -27,6 +27,7 @@ export class Basket {
     connect() {
         this.local = new ShopDB();
         this.notify = new Notify();
+       
     }
 
     initBasket() {

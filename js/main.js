@@ -15,7 +15,7 @@ new Auth();
 new Register();
 
 new Product().initTable();
-new Basket().initBasket();
+new Basket()
 getComponent("index.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCategory, ["getCategory",]);

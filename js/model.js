@@ -1,9 +1,21 @@
-
-
-const contacts = [
-    { login: "admin", pas: "123", role: "admin" },
-    { login: "alex", pas: "123", role: "user" },
-    { login: "dima", pas: "123", role: "user" },
+const contacts = [{
+        id:1,
+        login: "admin",
+        pas: "123",
+        role: "admin"
+    },
+    {
+        id:2,
+        login: "alex",
+        pas: "123",
+        role: "user"
+    },
+    {
+        id:3,
+        login: "dima",
+        pas: "123",
+        role: "user"
+    },
 ];
 
 
@@ -14,6 +26,7 @@ export class ShopDB {
         }
         ShopDB.instance = this;
         ShopDB.exist = true;
+        this.virtualDB = new VirtualDB();
 
     }
     openDB(fn, context) {
@@ -22,6 +35,7 @@ export class ShopDB {
         openRequest.onupgradeneeded = () => {
             let db = openRequest.result;
             this.creatTables("users", contacts, db);
+            contacts.forEach(contact => this.virtualDB.addUser(contact));
             this.creatTables("products", [], db);
             this.creatTables("basket", [], db);
         };
@@ -67,17 +81,23 @@ export class Data {
 }
 
 
-export class LocalDB {
+export class VirtualDB {
+    constructor(){
+        if(VirtualDB.exist) {
+            return VirtualDB.instance
+        }
+        VirtualDB.instance = this
+        VirtualDB.exist = true;
 
-    constructor() {
-
+        this.init()
     }
-
-
-    getUser() {
-        
+    init() {
+        this.users = [];
+        this.basket = [];
+        this.products = [];
     }
-
     
+    addUser(user) {
+        this.users.push(user)
+    }
 }
-
