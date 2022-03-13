@@ -1,4 +1,4 @@
-import { ShopDB } from "./model.js"
+import { LocalDB } from "./model.js"
 import { Notify } from "./notify.js";
 
 
@@ -31,34 +31,22 @@ export class Auth {
         this.loginBtn = this.wrap.querySelector("#login");
     }
     connect() {
-        this.local = new ShopDB();
+        this.local = new LocalDB();
         this.notify = new Notify();
     }
 
     login() {
-        this.loginBtn.addEventListener("click", (e) => {
+        this.loginBtn.addEventListener("click",  async (e) => {
             e.preventDefault();
-            this.local.openDB(this.getUsers, this);
+            let users = await this.local.getUsers();
+            this.check(users);
         })
-    }
-
-    getUsers(db) {
-        let transaction = db.transaction('users')
-            .objectStore("users")
-            .getAll();
-
-        transaction.onsuccess = () => {
-            this.check(transaction.result);
-        }
-        transaction.onerror = () => {
-            throw Error("error");
-        }
-
     }
 
     check(users) {
         let login = this.loginEl.value.trim();
         let pas = this.pasEl.value.trim();
+
         let auth = {
             login,
             pas

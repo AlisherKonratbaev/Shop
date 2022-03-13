@@ -1,67 +1,22 @@
 const contacts = [{
-        id:1,
+        id: 1,
         login: "admin",
         pas: "123",
         role: "admin"
     },
     {
-        id:2,
+        id: 2,
         login: "alex",
         pas: "123",
         role: "user"
     },
     {
-        id:3,
+        id: 3,
         login: "dima",
         pas: "123",
         role: "user"
     },
 ];
-
-
-export class ShopDB {
-    constructor() {
-        if (ShopDB.exist) {
-            return ShopDB.instance;
-        }
-        ShopDB.instance = this;
-        ShopDB.exist = true;
-        this.virtualDB = new VirtualDB();
-
-    }
-    openDB(fn, context) {
-        let openRequest = indexedDB.open("shop", 1);
-
-        openRequest.onupgradeneeded = () => {
-            let db = openRequest.result;
-            this.creatTables("users", contacts, db);
-            contacts.forEach(contact => this.virtualDB.addUser(contact));
-            this.creatTables("products", [], db);
-            this.creatTables("basket", [], db);
-        };
-
-        openRequest.onerror = () => {
-            console.error("Error", openRequest.error);
-        };
-
-        openRequest.onsuccess = () => {
-            let db = openRequest.result;
-            if (fn) fn.call(context, db);
-        };
-    }
-
-    creatTables(key, arr, db) {
-        let objectStore = db.createObjectStore(key, {
-            keyPath: 'id',
-            autoIncrement: true,
-        });
-
-        for (let i in arr) {
-            objectStore.add(arr[i]);
-        }
-    }
-
-}
 
 
 export class Data {
@@ -81,23 +36,162 @@ export class Data {
 }
 
 
-export class VirtualDB {
-    constructor(){
-        if(VirtualDB.exist) {
-            return VirtualDB.instance
+export class LocalDB {
+    constructor() {
+        if (LocalDB.exist) {
+            return LocalDB.instance
         }
-        VirtualDB.instance = this
-        VirtualDB.exist = true;
+        LocalDB.instance = this;
+        LocalDB.exist = true;
 
-        this.init()
     }
+
     init() {
-        this.users = [];
-        this.basket = [];
-        this.products = [];
+        return new Promise((resolve, reject) => {
+            this.db = null;
+            if (!('indexedDB' in window)) reject('not supported');
+
+            const dbOpen = indexedDB.open("shop", 1);
+
+            dbOpen.onupgradeneeded = e => {
+                this.db = dbOpen.result;
+
+                this.creatTables("users", contacts);
+                this.creatTables("products", []);
+                this.creatTables("baskets", []);
+
+                resolve(this);
+            };
+
+            dbOpen.onsuccess = () => {
+                this.db = dbOpen.result;
+                resolve(this);
+            };
+
+            dbOpen.onerror = e => {
+                reject(`IndexedDB error: ${ e.target.errorCode }`);
+            };
+
+        });
     }
+
+    creatTables(key, arr) {
+        let objectStore = this.db.createObjectStore(key, {
+            keyPath: 'id',
+            autoIncrement: true,
+        });
+
+        for (let i in arr) {
+            objectStore.add(arr[i]);
+        }
+    }
+
+    getUsers() {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('users')
+                .objectStore("users")
+                .getAll();
+
+            transaction.onsuccess = () => {
+                resolve(transaction.result);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
+    addUser(user, onsuccess) {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('users', 'readwrite')
+                .objectStore("users")
+                .add(user);
+
+            transaction.onsuccess = () => {
+                onsuccess();
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
+    getBaskets() {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('baskets')
+                .objectStore("baskets")
+                .getAll();
+
+            transaction.onsuccess = () => {
+                resolve(transaction.result);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+    addBasket(basket) {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('baskets', 'readwrite')
+                .objectStore("baskets")
+                .add(basket);
+
+            transaction.onsuccess = () => {
+                resolve(this);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
+    changeBasket(basket, onsuccess = null) {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('baskets', 'readwrite')
+                .objectStore("baskets")
+                .put(basket);
+
+            transaction.onsuccess = () => {
+                if (onsuccess) onsuccess();
+                resolve(this);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
+    addProduct(product) {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('products', 'readwrite')
+                .objectStore("products")
+                .add(product);
+
+            transaction.onsuccess = () => {
+                resolve(this);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
+    getProducts() {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('products')
+                .objectStore("products")
+                .getAll();
+
+            transaction.onsuccess = () => {
+                resolve(transaction.result);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
     
-    addUser(user) {
-        this.users.push(user)
-    }
+
+
 }

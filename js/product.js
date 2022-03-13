@@ -1,26 +1,22 @@
-import { ShopDB, Data } from "./model.js";
+import {
+    LocalDB,
+    Data
+} from "./model.js";
 
 const url = "https://dummyjson.com/products?limit=40";
 
 export class Product {
 
     constructor() {
-        this.db = new ShopDB();
+        this.localDB = new LocalDB();
         this.api = new Data();
-        
     }
 
-    initTable() {
-       
-        this.db.openDB(this.creatTable, this)
-    }
-
-    creatTable = async (db) => {
+    initTable = async () => {
         let res = await this.api.loadData(url);
-
         let myProducts = res.products.map(product => {
             return {
-                id:product.id,
+                id: product.id,
                 title: product.title,
                 brand: product.brand,
                 category: product.category,
@@ -32,22 +28,15 @@ export class Product {
             }
         })
 
-        myProducts.forEach(product => {
-            this.addPorduct(product, db)
-        });
-    }
+        let products = await this.localDB.getProducts();
 
-    addPorduct(product, db) {
-        let transaction = db.transaction('products', 'readwrite')
-            .objectStore("products")
-            .add(product);
+        if (products.length == 0) {
+            myProducts.forEach(product => {
+                this.localDB.addProduct(product);
+            })
+        }
 
-        transaction.onsuccess = () => {
-            
-        }
-        transaction.onerror = () => {
-            // throw Error("error");
-        }
     }
+    
 
 }

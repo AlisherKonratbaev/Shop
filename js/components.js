@@ -1,4 +1,6 @@
-import { ShopDB } from "./model.js";
+import {
+    LocalDB
+} from "./model.js";
 
 export class ProductCard {
     constructor() {
@@ -10,28 +12,20 @@ export class ProductCard {
         this.wrap = document.querySelector(".main_card");
     }
     connect() {
-        this.local = new ShopDB();
+        this.local = new LocalDB();
     }
 
-    getCard() {
-        this.local.openDB(this.showCard, this);
+    getCard = async () => {
+        await this.local.init();
+        let products = await this.local.getProducts();
+        this.showCards(products);
     }
 
-    showCard(db) {
-        let transaction = db.transaction('products')
-            .objectStore("products")
-            .getAll();
-
-        transaction.onsuccess = () => {
-            let products = transaction.result
-            let cards = this.generateCards(products);
-            this.wrap.innerHTML = cards;
-
-        }
-        transaction.onerror = () => {
-            throw Error("error");
-        }
+    showCards(products) {
+        let cards = this.generateCards(products);
+        this.wrap.innerHTML = cards;
     }
+
 
     generateCards(products) {
 
@@ -51,7 +45,7 @@ export class ProductCard {
                                 <a href="#" class="action quickview" data-link-action="quickview"
                                     title="Quick view" data-bs-toggle="modal"
                                     data-bs-target="#exampleModal"><i class="pe-7s-look"></i></a>
-                                
+
                             </div>
                         </div>
                         <div class="content">
@@ -79,7 +73,6 @@ export class ProductCard {
 
 }
 
-
 export class ProductCategory {
     constructor() {
         this.connect();
@@ -90,29 +83,17 @@ export class ProductCategory {
         this.wrap = document.querySelector(".sidebar-widget-category");
     }
     connect() {
-        this.local = new ShopDB();
+        this.local = new LocalDB();
     }
 
-    getCategory() {
-        this.local.openDB(this.showCategory, this);
+    getCategory = async () => {
+        await this.local.init();
+        let products = await this.local.getProducts();
+        let categoryHtml = this.renderHtml(products)
+        this.wrap.innerHTML = categoryHtml;
     }
 
-    showCategory(db) {
-        let transaction = db.transaction('products')
-            .objectStore("products")
-            .getAll();
-
-        transaction.onsuccess = () => {
-            let products = transaction.result;
-            let categories = this.generateCategories(products);
-            this.wrap.innerHTML = categories;
-        }
-        transaction.onerror = () => {
-            throw Error("error");
-        }
-    }
-
-    generateCategories(products) {
+    renderHtml(products) {
         let allCategories = products.map(product => product.category);
         let categories = this.unique(allCategories);
 
@@ -136,5 +117,3 @@ export class ProductCategory {
         return Array.from(new Set(arr));
     }
 }
-
-

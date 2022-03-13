@@ -1,5 +1,9 @@
-import { ShopDB } from "./model.js";
-import { Notify } from "./notify.js";
+import {
+    LocalDB
+} from "./model.js";
+import {
+    Notify
+} from "./notify.js";
 
 
 
@@ -30,33 +34,19 @@ export class Register {
 
     }
     connect() {
-        this.local = new ShopDB();
         this.notify = new Notify();
+        this.localDB = new LocalDB();
     }
 
     register() {
-        this.registerBtn.addEventListener("click", (e) => {
+        this.registerBtn.addEventListener("click", async (e) => {
             e.preventDefault();
-            this.local.openDB(this.getUsers, this);
-        })
-    }
-
-    getUsers(db) {
-        let transaction = db.transaction('users')
-            .objectStore("users")
-            .getAll();
-
-        transaction.onsuccess = () => {
-            let users = transaction.result
+            let users = await this.localDB.getUsers();
             let user = this.check(users);
             if (user) {
-                this.addUser(db, user)
+                this.localDB.addUser(user, this.onsuccess.bind(this))
             }
-        }
-        transaction.onerror = () => {
-            throw Error("error");
-        }
-
+        })
     }
 
 
@@ -73,7 +63,11 @@ export class Register {
             return;
         }
 
-        let newUser = { login, pas }
+        let newUser = {
+            login,
+            pas,
+            role: "user",
+        }
 
         if (users.find(user => user.login === newUser.login)) {
             this.notify.showMessage(this.cpasEl, "message", "Логин уже существует!");
@@ -83,23 +77,15 @@ export class Register {
         return newUser;
     }
 
-    addUser(db, user) {
-        let transaction = db.transaction('users', 'readwrite')
-            .objectStore("users")
-            .add(user);
-
-        transaction.onsuccess = () => {
-            this.notify.showNotification(this.loginEl, "notification", "Аккаунт успешно зарегистрирован");
-            this.clearInputs();
-            setTimeout(() =>{window.location.href = "login.html";}, 500);
-            
-        }
-        transaction.onerror = () => {
-            throw Error("error");
-        }
+    onsuccess() {
+        this.notify.showNotification(this.loginEl, "notification", "Аккаунт успешно зарегистрирован");
+        this.clearInputs();
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 500);
     }
 
-    clearInputs(){
+    clearInputs() {
         this.loginEl.value = "";
         this.pasEl.value = "";
         this.cpasEl.value = "";

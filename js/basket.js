@@ -1,5 +1,5 @@
 import {
-    ShopDB
+    LocalDB
 } from "./model.js";
 import {
     Notify
@@ -16,7 +16,9 @@ export class Basket {
         this.connect();
         this.initDOM();
         this.showBasket();
-        this.action();
+        this.creatProduct();
+        this.removeItem();
+        this.clearCart();
     }
 
     initDOM() {
@@ -25,72 +27,64 @@ export class Basket {
         this.ulEl = this.wrap.querySelector(".minicart-product-list");
     }
     connect() {
-        this.local = new ShopDB();
         this.notify = new Notify();
-       
+        this.localDB = new LocalDB();
     }
 
-    initBasket() {
-        this.local.openDB(this.getUsers, this);
-    }
-    getUsers(db) {
-        let transaction = db.transaction('users')
-            .objectStore("users")
-            .getAll();
+    initBasket = async () => {
+        await this.localDB.init();
+        const users = await this.localDB.getUsers();
+        const baskets = await this.localDB.getBaskets();
 
-        transaction.onsuccess = () => {
-            let users = transaction.result;
+        if (baskets.length == 0) {
             users.forEach(user => {
                 let basket = {
                     id: user.id,
                     login: user.login,
                     cart: []
                 }
-                this.creatBasket(basket, db);
+                this.localDB.addBasket(basket);
             });
-
-        }
-        transaction.onerror = () => {
-            throw Error("error");
         }
     }
 
-    showBasket() {
+
+    showBasket = async () => {
+        await this.localDB.init();
         this.user = JSON.parse(sessionStorage.getItem("authorizedUser")) || {}
+        this.ulEl.innerHTML = "";
+
         if (this.user.login) {
-            this.local.openDB(this.getBasket, this);
+            let baskets = await this.localDB.getBaskets();
+            let products = await this.localDB.getProducts();
 
-        } else {
-            this.ulEl.innerHTML = "";
-        }
-
-    }
-
-    getBasket(db) {
-        let transaction = db.transaction('basket')
-            .objectStore("basket")
-            .getAll();
-
-        transaction.onsuccess = () => {
-            let baskets = transaction.result;
             let currentBasket = baskets.find(basket => basket.login == this.user.login);
-            this.ulEl.innerHTML = this.renderHtml(currentBasket.cart);
-        }
-        transaction.onerror = () => {
-            throw Error("error");
-        }
 
+            this.showCount(currentBasket.cart);
+            this.showPrice(currentBasket.cart);
+            this.ulEl.innerHTML = this.renderHtml(currentBasket.cart, products);
+        }
     }
 
-    renderHtml(products) {
-        let productsHtml = products.map(product => {
-            return `<li>
+
+    renderHtml(cart, products) {
+        let productsHtml = cart.map(product => {
+            let current = products.find(item => item.id == product.product_id);
+
+            return `<li class="cart_item" data-id="${product.product_id}">
                         <a href="#" class="image">
-                            <img src="assets/images/product-image/1.jpg" alt="Cart product Image">
+                            <img src="${current.thumbnail}" alt="Cart product Image">
                         </a>
                         <div class="content">
                             <a href="#" class="title">${product.title}</a>
-                                <span class="quantity-price">${product.count} x <span class="amount">$${product.price}</span> = <span class="amount">$${product.total}</span></span>
+                                <span class="quantity-price">
+                                <div class="cart-plus-minus"><div class="dec qtybutton">-</div>
+                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="${product.count}">
+                                <div class="inc qtybutton">+</div></div>
+                                     x 
+                                    <span class="amount">$${product.price}</span> 
+                                    = <span class="amount">$${product.total}</span>
+                                </span>
                             <a href="#" class="remove">×</a>
                         </div>
                     </li>`;
@@ -98,100 +92,93 @@ export class Basket {
 
         return productsHtml.join("");
     }
-    getProductImg(id, db) {
-        if (db) {
-            let transaction = db.transaction('product')
-                .objectStore("product")
-                .get(+id);
 
-            transaction.onsuccess = () => {
-                let product = transaction.result;
-
-            }
-            transaction.onerror = () => {
-                throw Error("error");
-            }
-
-        } else {
-            this.local.openDB(this.getProductImg, this);
-        }
-
-    }
-
-    creatBasket(basket, db) {
-        let transaction = db.transaction('basket', 'readwrite')
-            .objectStore("basket")
-            .add(basket);
-
-        transaction.onsuccess = () => {
-
-        }
-        transaction.onerror = () => {
-
-        }
-    }
-
-
-    action(db) {
+    creatProduct = async () => {
         let productWrap = document.querySelector(".main_card");
         if (!productWrap) {
             return
         }
 
-        if (db) {
-            productWrap.addEventListener("click", (e) => {
-                if (!e.target.classList.contains("add-to-cart")) return;
-                let parrentEl = e.target.closest(".product");
+        productWrap.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("add-to-cart")) return;
+            let parrentEl = e.target.closest(".product");
 
-                let product = {
-                    product_id: parrentEl.dataset.id,
-                    title: parrentEl.dataset.title,
-                    count: 1,
-                    price: parrentEl.dataset.price,
-                    total: parrentEl.dataset.price,
-                };
+            let product = {
+                product_id: parrentEl.dataset.id,
+                title: parrentEl.dataset.title,
+                count: 1,
+                price: parrentEl.dataset.price,
+                total: parrentEl.dataset.price,
+            };
 
+            this.check(product);
+        });
+    }
 
-                let transaction = db.transaction('basket')
-                    .objectStore("basket")
-                    .getAll();
-
-                transaction.onsuccess = () => {
-                    let baskets = transaction.result;
-                    let i;
-
-                    let currentBasket = baskets.find((basket, index) => {
-                        if (basket.login == this.user.login) {
-                            i = index;
-                            return true;
-                        } else return false;
-                    });
-
-                    console.log(currentBasket);
-                    currentBasket.cart.push(product);
-
-                    let transaction2 = db.transaction('basket', 'readwrite')
-                        .objectStore("basket")
-                        .put(currentBasket);
-
-                    transaction2.onsuccess = () => {
-                        this.notify.showNotification(this.wrap, "notification", "product created in basket");
-                        this.showBasket();
-                    }
-                    transaction2.onerror = () => {
-                        throw Error("error");
-                    }
-
-                }
-                transaction.onerror = () => {
-                    throw Error("error");
-                }
-            });
-
-        } else {
-            this.local.openDB(this.action, this);
+    check = async (product) => {
+        let baskets = await this.localDB.getBaskets();
+        let i;
+        if (!this.user.login) {
+            this.notify.showNotification(this.wrap, "notification", "Необходимо авторизоваться");
+            return
         }
+        let currentBasket = baskets.find(basket => basket.login == this.user.login);
+        let flag = currentBasket.cart.find(item => item.product_id == product.product_id);
 
+        if (flag) {
+            this.notify.showNotification(this.wrap, "notification", "The product already exists in the cart");
+            return;
+        } else {
+            currentBasket.cart.push(product);
+            await this.localDB.changeBasket(currentBasket, () => {
+                this.notify.showNotification(this.wrap, "notification", "Product created in basket");
+                this.showBasket();
+            });
+        }
+    }
+
+    showCount(cart) {
+        let countEl = document.querySelector(".header-action-num");
+        countEl.textContent = cart.length;
+    }
+
+    showPrice(cart) {
+        let amount = cart.reduce((prev, currnet) => (prev + Number(currnet.total)), 0);
+        let amountEl = document.querySelector(".cart-amount");
+        amountEl.textContent = "$" + amount;
+    }
+
+    removeItem = async () => {
+        this.body.addEventListener('click', async (e) => {
+            if (!e.target.classList.contains("remove")) return;
+
+            e.preventDefault();
+            let parrnetEl = e.target.closest(".cart_item");
+            let id = parrnetEl.dataset.id;
+            let baskets = await this.localDB.getBaskets();
+            let currentBasket = baskets.find(basket => basket.login == this.user.login);
+
+            let newCart = currentBasket.cart.filter(product => product.product_id != id)
+            currentBasket.cart = newCart;
+            this.localDB.changeBasket(currentBasket, () => {
+                this.notify.showNotification(this.wrap, "notification", "product removed");
+                this.showBasket();
+            });
+        })
+    }
+
+    clearCart() {
+        document.querySelector(".clear-cart").addEventListener("click", async (e) => {
+            e.preventDefault();
+            let baskets = await this.localDB.getBaskets();
+            let currentBasket = baskets.find(basket => basket.login == this.user.login);
+            currentBasket.cart.length = 0;
+            this.localDB.changeBasket(currentBasket, () => {
+                this.notify.showNotification(this.wrap, "notification", "all items removed");
+               
+                this.showBasket();
+            });
+        })
     }
 
 
