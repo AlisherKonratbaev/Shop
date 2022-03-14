@@ -4,6 +4,7 @@ import { Register } from "./register.js";
 import { Product } from "./product.js"
 import { ProductCard, ProductCategory } from "./components.js"
 import { Basket } from "./basket.js";
+import { Order } from "./order.js";
 
 
 let loccalDB = new LocalDB();
@@ -16,6 +17,7 @@ new Register();
 
 new Product().initTable();
 new Basket().initBasket();
+new Order();
 
 getComponent("index.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCard, ["getCard",]);

@@ -59,7 +59,7 @@ export class LocalDB {
                 this.creatTables("users", contacts);
                 this.creatTables("products", []);
                 this.creatTables("baskets", []);
-
+                this.creatTables("orders", []);
                 resolve(this);
             };
 
@@ -191,6 +191,35 @@ export class LocalDB {
         })
     }
 
+    getOrders() {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('orders')
+                .objectStore("orders")
+                .getAll();
+
+            transaction.onsuccess = () => {
+                resolve(transaction.result);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
+
+    addOrder(order) {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction('orders', 'readwrite')
+                .objectStore("orders")
+                .add(order);
+
+            transaction.onsuccess = () => {
+                resolve(this);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
     
 
 

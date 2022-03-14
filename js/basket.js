@@ -13,12 +13,11 @@ export class Basket {
         }
         Basket.instance = this;
         Basket.exist = true;
+
         this.connect();
         this.initDOM();
-        this.showBasket();
-        this.creatProduct();
-        this.removeItem();
-        this.clearCart();
+        this.operations()
+
     }
 
     initDOM() {
@@ -29,6 +28,14 @@ export class Basket {
     connect() {
         this.notify = new Notify();
         this.localDB = new LocalDB();
+    }
+    operations() {
+        this.showBasket();
+        this.creatProduct();
+        this.removeItem();
+        this.clearCart();
+        this.changeItemsCount();
+
     }
 
     initBasket = async () => {
@@ -78,9 +85,10 @@ export class Basket {
                         <div class="content">
                             <a href="#" class="title">${product.title}</a>
                                 <span class="quantity-price">
-                                <div class="cart-plus-minus"><div class="dec qtybutton">-</div>
-                                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="${product.count}">
-                                <div class="inc qtybutton">+</div></div>
+                                    <form>
+                                        <input type="text" class="product_count" value="${product.count}">
+                                    </form>
+                                    
                                      x 
                                     <span class="amount">$${product.price}</span> 
                                     = <span class="amount">$${product.total}</span>
@@ -145,6 +153,8 @@ export class Basket {
     showPrice(cart) {
         let amount = cart.reduce((prev, currnet) => (prev + Number(currnet.total)), 0);
         let amountEl = document.querySelector(".cart-amount");
+        let titleEl = this.wrap.querySelector(".title");
+        titleEl.textContent = "Cart $" + amount;
         amountEl.textContent = "$" + amount;
     }
 
@@ -152,7 +162,7 @@ export class Basket {
         this.body.addEventListener('click', async (e) => {
             if (!e.target.classList.contains("remove")) return;
 
-            e.preventDefault();
+            // e.preventDefault();
             let parrnetEl = e.target.closest(".cart_item");
             let id = parrnetEl.dataset.id;
             let baskets = await this.localDB.getBaskets();
@@ -175,11 +185,29 @@ export class Basket {
             currentBasket.cart.length = 0;
             this.localDB.changeBasket(currentBasket, () => {
                 this.notify.showNotification(this.wrap, "notification", "all items removed");
-               
                 this.showBasket();
             });
         })
     }
 
+    changeItemsCount() {
+        this.body.addEventListener("change", async (e) => {
+            if (!e.target.classList.contains("product_count")) return
+            let baskets = await this.localDB.getBaskets();
+            let currentBasket = baskets.find(basket => basket.login == this.user.login);
+            let id = e.target.closest(".cart_item").dataset.id;
+            if (e.target.value <= 1) {
+                e.target.value = 1;
+            }
+            currentBasket.cart.forEach(product => {
+                if (product.product_id == id) {
+                    product.count = e.target.value;
+                    product.total = product.price * product.count;
+                }
+            });
 
+            this.localDB.changeBasket(currentBasket, this.showBasket.bind(this));
+        })
+    }
+    
 }
