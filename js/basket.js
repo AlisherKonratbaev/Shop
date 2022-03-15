@@ -209,5 +209,9 @@ export class Basket {
             this.localDB.changeBasket(currentBasket, this.showBasket.bind(this));
         })
     }
-    
+
+    closeCanvas() {
+        this.wrap.classList.remove("offcanvas-open");
+        document.querySelector(".offcanvas-overlay").style.display = "none";
+    }
 }

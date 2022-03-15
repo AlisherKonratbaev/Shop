@@ -17,7 +17,6 @@ export class Auth {
     }
 
     verify() {
-        this.logout();
         if (!window.location.href.includes("login.html")) {
             return false;
         }
@@ -71,13 +70,5 @@ export class Auth {
             this.notify.showMessage(this.pasEl, "messege", "Неверный логин или пароль");
         }
     }
-
-    logout() {
-        const logoutBtn = document.querySelector("#logout");
-
-        logoutBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            sessionStorage.removeItem("authorizedUser");
-        })
-    }
+    
 }

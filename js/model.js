@@ -206,13 +206,14 @@ export class LocalDB {
         })
     }
 
-    addOrder(order) {
+    addOrder(order, onsuccess = null) {
         return new Promise((resolve, reject) => {
             let transaction = this.db.transaction('orders', 'readwrite')
                 .objectStore("orders")
                 .add(order);
 
             transaction.onsuccess = () => {
+                if (onsuccess) onsuccess();
                 resolve(this);
             }
             transaction.onerror = () => {
@@ -220,7 +221,7 @@ export class LocalDB {
             }
         })
     }
-    
+
 
 
 }
