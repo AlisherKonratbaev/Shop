@@ -55,21 +55,21 @@ export class User {
         let users = await this.local.getUsers();
         let current = users.find(user => user.login == this.user.login);
 
-        if (current.role != "user") return
+    
 
         let allOrders = await this.local.getOrders();
         let myOrders = allOrders.filter(order => order.login == this.user.login);
 
 
 
-        let html = this.getOrders(myOrders);
+        let html = this.renderOrders(myOrders);
         document.querySelector(".order-body").innerHTML = html;
 
         this.generateModal(myOrders);
 
     }
 
-    getOrders(orders) {
+    renderOrders(orders) {
 
         let html = orders.map((purchase, index) => {
             let amount = purchase.order.reduce((prev, currnet) => (prev + Number(currnet.total)), 0);

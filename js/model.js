@@ -87,114 +87,48 @@ export class LocalDB {
     }
 
     getUsers() {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('users')
-                .objectStore("users")
-                .getAll();
-
-            transaction.onsuccess = () => {
-                resolve(transaction.result);
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+        return this.getTable("users");
     }
 
-    addUser(user, onsuccess) {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('users', 'readwrite')
-                .objectStore("users")
-                .add(user);
-
-            transaction.onsuccess = () => {
-                onsuccess();
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+    addUser(user, onsuccess = null) {
+        return this.addItem("users", user, onsuccess);
     }
 
     getBaskets() {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('baskets')
-                .objectStore("baskets")
-                .getAll();
-
-            transaction.onsuccess = () => {
-                resolve(transaction.result);
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+        return this.getTable("baskets");
     }
-    addBasket(basket) {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('baskets', 'readwrite')
-                .objectStore("baskets")
-                .add(basket);
-
-            transaction.onsuccess = () => {
-                resolve(this);
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+    addBasket(basket, onsuccess = null) {
+        return this.addItem("baskets", basket, onsuccess);
     }
 
     changeBasket(basket, onsuccess = null) {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('baskets', 'readwrite')
-                .objectStore("baskets")
-                .put(basket);
-
-            transaction.onsuccess = () => {
-                if (onsuccess) onsuccess();
-                resolve(this);
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+        return this.changeItem("baskets", basket, onsuccess)
     }
 
-    addProduct(product) {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('products', 'readwrite')
-                .objectStore("products")
-                .add(product);
-
-            transaction.onsuccess = () => {
-                resolve(this);
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+    addProduct(product, onsuccess = null) {
+        return this.addItem("products", product, onsuccess);
     }
 
     getProducts() {
-        return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('products')
-                .objectStore("products")
-                .getAll();
-
-            transaction.onsuccess = () => {
-                resolve(transaction.result);
-            }
-            transaction.onerror = () => {
-                reject("error");
-            }
-        })
+        return this.getTable("products");
     }
 
     getOrders() {
+        return this.getTable("orders");
+    }
+
+    addOrder(order, onsuccess = null) {
+        return this.addItem("orders", order, onsuccess);
+    }
+
+    changeOrderStatus(order, onsuccess = null) {
+        return this.changeItem("orders", order, onsuccess)
+    }
+
+    getTable(tableName) {
         return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('orders')
-                .objectStore("orders")
+            let transaction = this.db.transaction(tableName)
+                .objectStore(tableName)
                 .getAll();
 
             transaction.onsuccess = () => {
@@ -206,11 +140,11 @@ export class LocalDB {
         })
     }
 
-    addOrder(order, onsuccess = null) {
+    addItem(tableName, item, onsuccess) {
         return new Promise((resolve, reject) => {
-            let transaction = this.db.transaction('orders', 'readwrite')
-                .objectStore("orders")
-                .add(order);
+            let transaction = this.db.transaction(tableName, 'readwrite')
+                .objectStore(tableName)
+                .add(item);
 
             transaction.onsuccess = () => {
                 if (onsuccess) onsuccess();
@@ -222,6 +156,21 @@ export class LocalDB {
         })
     }
 
+    changeItem(tableName, item, onsuccess) {
+        return new Promise((resolve, reject) => {
+            let transaction = this.db.transaction(tableName, 'readwrite')
+                .objectStore(tableName)
+                .put(item);
+
+            transaction.onsuccess = () => {
+                if (onsuccess) onsuccess();
+                resolve(this);
+            }
+            transaction.onerror = () => {
+                reject("error");
+            }
+        })
+    }
 
 
 }

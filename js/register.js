@@ -4,6 +4,9 @@ import {
 import {
     Notify
 } from "./notify.js";
+import {
+    Basket
+} from "./basket.js";
 
 
 
@@ -14,6 +17,7 @@ export class Register {
             return
         }
         this.initDom();
+        this.observer = [];
         this.connect();
         this.register();
     }
@@ -36,6 +40,7 @@ export class Register {
     connect() {
         this.notify = new Notify();
         this.localDB = new LocalDB();
+        this.basket = new Basket();
     }
 
     register() {
@@ -45,6 +50,8 @@ export class Register {
             let user = this.check(users);
             if (user) {
                 this.localDB.addUser(user, this.onsuccess.bind(this))
+                let basket = this.basket.getEmptyBasket(user);
+                this.localDB.addBasket(basket);
             }
         })
     }
@@ -89,5 +96,14 @@ export class Register {
         this.loginEl.value = "";
         this.pasEl.value = "";
         this.cpasEl.value = "";
+    }
+
+
+    subscribe(observer) {
+        this.observers.push(observer)
+    }
+
+    unsubscribe(observer) {
+        this.observers = this.observers.filter(input => input !== observer)
     }
 }

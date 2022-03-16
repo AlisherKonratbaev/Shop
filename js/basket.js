@@ -45,16 +45,19 @@ export class Basket {
 
         if (baskets.length == 0) {
             users.forEach(user => {
-                let basket = {
-                    id: user.id,
-                    login: user.login,
-                    cart: []
-                }
+                let basket = this.getEmptyBasket(user)
+                basket.id = user.id;
                 this.localDB.addBasket(basket);
             });
         }
     }
 
+    getEmptyBasket(user) {
+        return {
+            login: user.login,
+            cart: [],
+        }
+    }
 
     showBasket = async () => {
         await this.localDB.init();
@@ -86,9 +89,8 @@ export class Basket {
                             <a href="#" class="title">${product.title}</a>
                                 <span class="quantity-price">
                                     <form>
-                                        <input type="text" class="product_count" value="${product.count}">
+                                        <input type="number" class="product_count" value="${product.count}">
                                     </form>
-                                    
                                      x 
                                     <span class="amount">$${product.price}</span> 
                                     = <span class="amount">$${product.total}</span>
