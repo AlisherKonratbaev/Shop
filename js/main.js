@@ -2,7 +2,8 @@ import { Auth } from "./auth.js";
 import { LocalDB } from "./model.js";
 import { Register } from "./register.js";
 import { Product } from "./product.js"
-import { ProductCard, ProductCategory } from "./components.js"
+import { ProductCard, ProductCategory, FilterCategory, FilterPrice } from "./components.js";
+import { Pagination } from "./pagination.js";
 import { Basket } from "./basket.js";
 import { Order } from "./order.js";
 import { User } from "./user.js";
@@ -26,7 +27,10 @@ new Admin();
 getComponent("index.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCategory, ["getCategory",]);
+getComponent("shop.html", FilterCategory, ["action",]);
+getComponent("shop.html", FilterPrice, ["action",]);getComponent("shop.html", FilterPrice, ["action",]);
 
+getComponent("shop.html", Pagination, ["showPagination",]);
 
 function getComponent(url, Component, methods) {
   

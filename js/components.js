@@ -31,8 +31,8 @@ export class ProductCard {
 
         const html = products.map(product => {
             return `
-                <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
-                    <div class="product" data-id="${product.id}" data-title="${product.title}" data-price="${product.price}">
+                <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px product-wrap show">
+                    <div class="product" data-category="${product.category}" data-id="${product.id}" data-title="${product.title}" data-price="${product.price}">
                         <div class="thumb">
                             <a href="single-product.html" class="image">
                                 <img src="${product.thumbnail}" alt="Product" />
@@ -100,14 +100,14 @@ export class ProductCategory {
         let html = categories.map(category => {
             let count = allCategories.filter(item => item == category).length;
             return `<li>
-                        <a href="#" class=""><i class="fa fa-angle-right"></i> ${category} <span>(${count})</span></a>
+                        <a href="#" class="category-item" data-action="${category}"><i class="fa fa-angle-right"></i> ${category} <span>(${count})</span></a>
                     </li>`;
         });
 
 
         return `<ul>
                     <li>
-                        <a href="#" class=""><i class="fa fa-angle-right"></i> All <span>(${allCategories.length})</span></a>
+                        <a href="#" class="category-item" data-action="all"><i class="fa fa-angle-right"></i> All <span>(${allCategories.length})</span></a>
                     </li> 
                     ${html.join("")}
                 </ul>`
@@ -117,3 +117,70 @@ export class ProductCategory {
         return Array.from(new Set(arr));
     }
 }
+
+export class FilterCategory {
+
+    constructor() {
+        this.initDOM();
+    }
+
+    initDOM() {
+        this.categoryWidget = document.querySelector(".sidebar-widget-category");
+    }
+
+    action() {
+        this.categoryWidget.addEventListener("click", (e) => {
+            if (!e.target.classList.contains("category-item")) return
+            e.preventDefault();
+            let category = e.target.dataset.action;
+            let productsEl = document.querySelectorAll(".product");
+            productsEl.forEach(el => {
+                if (el.dataset.category == category) {
+                    el.parentElement.classList.add("show");
+                    el.parentElement.classList.remove("hide");
+                } else if (category == "all") {
+                    el.parentElement.classList.add("show");
+                    el.parentElement.classList.remove("hide");
+                } else {
+                    el.parentElement.classList.add("hide");
+                    el.parentElement.classList.remove("show");
+                }
+            })
+        })
+    }
+}
+
+export class FilterPrice {
+    constructor() {
+        this.connect();
+        this.initDOM();
+        this.showPrice();
+    }
+
+    initDOM() {
+        this.priceWidget = document.querySelector(".price-filter");
+        
+
+    }
+    connect() {
+        this.local = new LocalDB();
+    }
+
+    showPrice = async () => {
+        await this.local.init()
+        let products = await this.local.getProducts();
+
+        let prices = products.map(product => product.price);
+        
+        let min = Math.min(...prices);
+        let max = Math.max(...prices);
+        const amountEl = this.priceWidget.querySelector("#amount");
+       
+        
+    }
+
+    action() {
+
+    }
+}
+
