@@ -28,7 +28,7 @@ getComponent("index.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCard, ["getCard",]);
 getComponent("shop.html", ProductCategory, ["getCategory",]);
 getComponent("shop.html", FilterCategory, ["action",]);
-getComponent("shop.html", FilterPrice, ["action",]);getComponent("shop.html", FilterPrice, ["action",]);
+// getComponent("shop.html", FilterPrice, ["action",]);
 
 getComponent("shop.html", Pagination, ["showPagination",]);
 
